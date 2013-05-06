@@ -14,11 +14,11 @@ end
 
 def list_tasks
   clean_tasks
-  puts "Remaining tasks:"
   task_list = Dir.glob("#{TASK_DIR}/*.task")
   if task_list.empty?
     puts "All tasks have been completed!"
   else
+    puts "Remaining tasks:"
     task_list.sort.each do |task|
       File.open(task, "r+") do |f|
         puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
