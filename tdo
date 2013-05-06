@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+Dir.mkdir("#{Dir.home}/.tasks") unless Dir.exists?("#{Dir.home}/.tasks")
+TASK_DIR = "#{Dir.home}/.tasks"
+
+def new_task(content=ARGV[1..ARGV.length].join(" "))
+  clean_tasks
+  task_number = Dir.glob("#{TASK_DIR}/*.task").count + 1
+  File.new("#{TASK_DIR}/#{task_number}.task", "w+")
+  File.open("#{TASK_DIR}/#{task_number}.task", "w+") do |f|
+    f.puts content
+  end
+end
+
+def tasks
+  clean_tasks
+  tasks = Dir.glob("#{TASK_DIR}/*.task")
+  tasks.sort.each do |task|
+    File.open(task, "r+") do |f|
+      puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
+    end
+  end
+end
+
+def clean_tasks
+  tasks = Dir.glob("#{TASK_DIR}/*.task")
+  counter = 1
+
+  if tasks.empty?
+    puts "All tasks have been completed!"
+  else
+    tasks.sort.each_with_index do |task, i|
+      if File.basename(task).tr('.task', '') != i+1
+        File.rename(task, "#{i+1}.task")
+      end
+    end
+  end
+end
+
+
+def complete(task_number=ARGV[1])
+  tasks = Dir.glob("#{TASK_DIR}/*.task")
+  tasks.sort.each do |task|
+    File.delete(task) if File.basename(task).tr('.task', '') == task_number
+  end
+  clean_tasks
+end
+
+if ARGV.empty?
+  puts "Usage: "
+  puts "       tdo new - create a new task   (e.g. 'tdo new make a new task')"
+  puts "       tdo tasks - get a list of all current tasks"
+  puts "       tdo complete - complete a task by giving its number   (e.g. 'tdo complete 1')"
+else
+  new_task if ARGV[0] == "new"
+  tasks if ARGV[0] == "tasks"
+  complete if ARGV[0] == "complete"
+end
