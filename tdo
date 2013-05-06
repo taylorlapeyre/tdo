@@ -9,10 +9,12 @@ def new_task(content=ARGV[1..ARGV.length].join(" "))
   File.open("#{TASK_DIR}/#{task_number}.task", "w+") do |f|
     f.puts content
   end
+  puts "New task created!"
 end
 
 def list_tasks
   clean_tasks
+  puts "Current tasks:"
   task_list = Dir.glob("#{TASK_DIR}/*.task")
   if task_list.empty?
     puts "All tasks have been completed!"
@@ -27,9 +29,19 @@ end
 
 def complete_task(task_number=ARGV[1])
   task_list = Dir.glob("#{TASK_DIR}/*.task")
+  deleted = false
 
   task_list.sort.each do |task|
-    File.delete(task) if File.basename(task).tr('.task', '') == task_number
+    if File.basename(task).tr('.task', '') == task_number
+      File.delete(task) && deleted = true 
+    end
+  end
+
+  if deleted
+    puts "Task completed!"
+  else
+    puts "Task #{task_number} not found."
+    list_tasks
   end
   clean_tasks
 end
