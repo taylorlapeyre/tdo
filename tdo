@@ -13,35 +13,35 @@ end
 
 def tasks
   clean_tasks
-  tasks = Dir.glob("#{TASK_DIR}/*.task")
-  tasks.sort.each do |task|
-    File.open(task, "r+") do |f|
-      puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
-    end
-  end
-end
-
-def clean_tasks
-  tasks = Dir.glob("#{TASK_DIR}/*.task")
-
   if tasks.empty?
     puts "All tasks have been completed!"
   else
-    tasks.sort.each_with_index do |task, i|
-      if File.basename(task).tr('.task', '') != i+1
-        File.rename(task, "#{i+1}.task")
+    tasks = Dir.glob("#{TASK_DIR}/*.task")
+    tasks.sort.each do |task|
+      File.open(task, "r+") do |f|
+        puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
       end
     end
   end
 end
 
-
 def complete(task_number=ARGV[1])
   tasks = Dir.glob("#{TASK_DIR}/*.task")
+
   tasks.sort.each do |task|
     File.delete(task) if File.basename(task).tr('.task', '') == task_number
   end
   clean_tasks
+end
+
+def clean_tasks
+  tasks = Dir.glob("#{TASK_DIR}/*.task")
+
+  tasks.sort.each_with_index do |task, i|
+    if File.basename(task).tr('.task', '') != i+1
+      File.rename(task, "#{i+1}.task")
+    end
+  end
 end
 
 if ARGV.empty?
