@@ -14,7 +14,7 @@ end
 
 def list_tasks
   clean_tasks
-  puts "Current tasks:"
+  puts "Remaining tasks:"
   task_list = Dir.glob("#{TASK_DIR}/*.task")
   if task_list.empty?
     puts "All tasks have been completed!"
