@@ -11,13 +11,13 @@ def new_task(content=ARGV[1..ARGV.length].join(" "))
   end
 end
 
-def tasks
+def list_tasks
   clean_tasks
-  if tasks.empty?
+  task_list = Dir.glob("#{TASK_DIR}/*.task")
+  if task_list.empty?
     puts "All tasks have been completed!"
   else
-    tasks = Dir.glob("#{TASK_DIR}/*.task")
-    tasks.sort.each do |task|
+    task_list.sort.each do |task|
       File.open(task, "r+") do |f|
         puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
       end
@@ -25,21 +25,22 @@ def tasks
   end
 end
 
-def complete(task_number=ARGV[1])
-  tasks = Dir.glob("#{TASK_DIR}/*.task")
+def complete_task(task_number=ARGV[1])
+  task_list = Dir.glob("#{TASK_DIR}/*.task")
 
-  tasks.sort.each do |task|
+  task_list.sort.each do |task|
     File.delete(task) if File.basename(task).tr('.task', '') == task_number
   end
   clean_tasks
 end
 
 def clean_tasks
-  tasks = Dir.glob("#{TASK_DIR}/*.task")
-
-  tasks.sort.each_with_index do |task, i|
-    if File.basename(task).tr('.task', '') != i+1
-      File.rename(task, "#{i+1}.task")
+  task_list = Dir.glob("#{TASK_DIR}/*.task")
+  unless task_list.empty?
+    task_list.sort.each_with_index do |task, i|
+      if File.basename(task).tr('.task', '') != (i + 1).to_s
+        File.rename(task, "#{TASK_DIR}/#{i + 1}.task")
+      end
     end
   end
 end
@@ -52,9 +53,9 @@ if ARGV.empty?
 elsif ARGV[0] == "new"
   new_task 
 elsif ARGV[0] == "tasks"
-  tasks
+  list_tasks
 elsif ARGV[0] == "complete"
-  complete
+  complete_task
 else
   puts "Unrecognized Command. Run 'tdo' to see usage"
 end
