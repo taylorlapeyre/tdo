@@ -1,4 +1,24 @@
 #!/usr/bin/env ruby
+
+class String
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def green
+    colorize(32)
+  end
+
+  def blue
+    colorize(34)
+  end
+
+  def red
+    colorize(31)
+  end
+end
+
+
 Dir.mkdir("#{Dir.home}/.tasks") unless Dir.exists?("#{Dir.home}/.tasks")
 TASK_DIR = "#{Dir.home}/.tasks"
 
@@ -16,12 +36,12 @@ def list_tasks
   clean_tasks
   task_list = Dir.glob("#{TASK_DIR}/*.task")
   if task_list.empty?
-    puts "All tasks have been completed!"
+    puts "You have no remaining tasks".green
   else
     puts "Remaining tasks:"
     task_list.sort.each do |task|
       File.open(task, "r+") do |f|
-        puts "#{File.basename(task).tr('.task', '')}) #{f.read}"
+        print "#{File.basename(task).tr('.task', '')}) #{f.read}".blue
       end
     end
   end
@@ -33,15 +53,14 @@ def complete_task(task_number=ARGV[1])
 
   task_list.sort.each do |task|
     if File.basename(task).tr('.task', '') == task_number
-      File.delete(task) && deleted = true 
+      File.delete(task) && deleted = true
     end
   end
 
   if deleted
-    puts "Task completed!"
+    puts "Task completed!".green
   else
-    puts "Task #{task_number} not found."
-    list_tasks
+    puts "Task #{task_number} not found.".red
   end
   clean_tasks
 end
@@ -63,7 +82,7 @@ if ARGV.empty?
   puts "       tdo tasks - get a list of all current tasks"
   puts "       tdo complete - complete a task by giving its number   (e.g. 'tdo complete 1')"
 elsif ARGV[0] == "new"
-  new_task 
+  new_task
 elsif ARGV[0] == "tasks"
   list_tasks
 elsif ARGV[0] == "complete"
