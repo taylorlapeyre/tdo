@@ -38,7 +38,7 @@ def list_tasks
   if task_list.empty?
     puts "You have no remaining tasks".green
   else
-    puts "Remaining tasks:"
+    puts "To Do:"
     task_list.sort.each do |task|
       File.open(task, "r+") do |f|
         print "#{File.basename(task).tr('.task', '')}) #{f.read}".blue
