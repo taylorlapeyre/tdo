@@ -25,10 +25,7 @@ TASK_DIR = "#{Dir.home}/.tasks"
 def new_task(content=ARGV[1..ARGV.length].join(" "))
   clean_tasks
   task_number = Dir.glob("#{TASK_DIR}/*.task").count + 1
-  File.new("#{TASK_DIR}/#{task_number}.task", "w+")
-  File.open("#{TASK_DIR}/#{task_number}.task", "w+") do |f|
-    f.puts content
-  end
+  File.write("#{TASK_DIR}/#{task_number}.task", content + "\n")
   puts "New task created!"
 end
 
@@ -40,9 +37,7 @@ def list_tasks
   else
     puts "To Do:"
     task_list.sort.each do |task|
-      File.open(task, "r+") do |f|
-        print "#{File.basename(task).tr('.task', '')}) #{f.read}".blue
-      end
+      print "#{File.basename(task).tr('.task', '')}) #{File.read(task)}".blue
     end
   end
 end
@@ -57,11 +52,7 @@ def complete_task(task_number=ARGV[1])
     end
   end
 
-  if deleted
-    puts "Task completed!".green
-  else
-    puts "Task #{task_number} not found.".red
-  end
+  puts deleted ? "Task completed!".green : "Task #{task_number} not found.".red
   clean_tasks
 end
 
@@ -76,16 +67,17 @@ def clean_tasks
   end
 end
 
-if ARGV.empty?
+case ARGV[0]
+when nil
   puts "Usage: "
   puts "       tdo new - create a new task   (e.g. 'tdo new make a new task')"
   puts "       tdo tasks - get a list of all current tasks"
   puts "       tdo complete - complete a task by giving its number   (e.g. 'tdo complete 1')"
-elsif ARGV[0] == "new"
+when "new"
   new_task
-elsif ARGV[0] == "tasks"
+when "tasks"
   list_tasks
-elsif ARGV[0] == "complete"
+when "complete"
   complete_task
 else
   puts "Unrecognized Command. Run 'tdo' to see usage"
