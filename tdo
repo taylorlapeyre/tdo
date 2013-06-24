@@ -22,7 +22,7 @@ end
 Dir.mkdir("#{Dir.home}/.tasks") unless Dir.exists?("#{Dir.home}/.tasks")
 TASK_DIR = "#{Dir.home}/.tasks"
 
-def new_task(content=ARGV[1..ARGV.length].join(" "))
+def new_task(content=ARGV.join(" "))
   clean_tasks
   task_number = Dir.glob("#{TASK_DIR}/*.task").count + 1
   File.write("#{TASK_DIR}/#{task_number}.task", content + "\n")
@@ -73,12 +73,10 @@ when nil
   puts "       tdo new - create a new task   (e.g. 'tdo new make a new task')"
   puts "       tdo tasks - get a list of all current tasks"
   puts "       tdo complete - complete a task by giving its number   (e.g. 'tdo complete 1')"
-when "new"
-  new_task
 when "tasks"
   list_tasks
 when "complete"
   complete_task
 else
-  puts "Unrecognized Command. Run 'tdo' to see usage"
+  new_task
 end
