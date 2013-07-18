@@ -70,7 +70,7 @@ end
 case ARGV[0]
 when nil
   puts "Usage: "
-  puts "       tdo new - create a new task   (e.g. 'tdo new make a new task')"
+  puts "       tdo remember the milk - Add a new task"
   puts "       tdo tasks - get a list of all current tasks"
   puts "       tdo complete - complete a task by giving its number   (e.g. 'tdo complete 1')"
 when "tasks"
