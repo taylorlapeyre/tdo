@@ -1,6 +1,6 @@
-#### Tdo
+#### tdo
 
-Tdo is an extremely simple task manager for the command line.
+tdo is an extremely simple task manager for the command line.
 
 #### Usage
 
